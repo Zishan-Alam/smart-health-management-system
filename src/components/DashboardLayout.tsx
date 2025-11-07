@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Activity, Calendar, FileText, Users, Settings, LogOut, LayoutDashboard, CreditCard, Stethoscope, BarChart3 } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
   const location = useLocation();
-  const { signOut, profile } = useAuth();
+  const { profile, signOut } = useAuth();
   
   const patientNav = [
     { name: "Dashboard", path: "/dashboard/patient", icon: LayoutDashboard },
@@ -96,7 +96,7 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
             </div>
             <div className="flex items-center gap-3 ml-auto">
               <span className="text-sm text-muted-foreground hidden md:block">
-                {profile?.full_name || role.charAt(0).toUpperCase() + role.slice(1)}
+                {profile?.full_name || `${role.charAt(0).toUpperCase() + role.slice(1)} Portal`}
               </span>
               <div className="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-semibold">
                 {profile?.full_name?.charAt(0).toUpperCase() || role.charAt(0).toUpperCase()}

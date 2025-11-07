@@ -5,21 +5,22 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, UserCircle, Stethoscope, Shield } from "lucide-react";
+import { Activity, UserCircle, Stethoscope, Shield, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [role, setRole] = useState<string>("patient");
-  const [loading, setLoading] = useState(false);
-  const { signUp, signIn, user, profile } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { signIn, signUp, user, profile } = useAuth();
   const navigate = useNavigate();
 
+  // Redirect if already logged in
   useEffect(() => {
-    // Redirect if already logged in
     if (user && profile) {
       navigate(`/dashboard/${profile.role}`);
     }
@@ -27,30 +28,25 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
     try {
       await signIn(email, password);
     } catch (error) {
-      // Error is handled in useAuth hook
+      console.error("Login error:", error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (password.length < 6) {
-      return;
-    }
-    
-    setLoading(true);
+    setIsLoading(true);
     try {
       await signUp(email, password, name, role);
     } catch (error) {
-      // Error is handled in useAuth hook
+      console.error("Signup error:", error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -101,40 +97,19 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="login-role">Sign in as</Label>
-                    <Select value={role} onValueChange={setRole}>
-                      <SelectTrigger id="login-role">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="patient">
-                          <div className="flex items-center gap-2">
-                            <UserCircle className="h-4 w-4" />
-                            <span>Patient</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="doctor">
-                          <div className="flex items-center gap-2">
-                            <Stethoscope className="h-4 w-4" />
-                            <span>Doctor</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="admin">
-                          <div className="flex items-center gap-2">
-                            <Shield className="h-4 w-4" />
-                            <span>Admin</span>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                   <Button 
                     type="submit" 
                     className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-                    disabled={loading}
+                    disabled={isLoading}
                   >
-                    {loading ? "Signing in..." : "Sign In"}
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Signing in...
+                      </>
+                    ) : (
+                      "Sign In"
+                    )}
                   </Button>
                 </form>
               </TabsContent>
@@ -210,9 +185,16 @@ const Auth = () => {
                   <Button 
                     type="submit" 
                     className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-                    disabled={loading}
+                    disabled={isLoading}
                   >
-                    {loading ? "Creating account..." : "Create Account"}
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating account...
+                      </>
+                    ) : (
+                      "Create Account"
+                    )}
                   </Button>
                 </form>
               </TabsContent>
