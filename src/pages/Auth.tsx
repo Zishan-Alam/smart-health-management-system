@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,30 +6,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Activity, UserCircle, Stethoscope, Shield } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [role, setRole] = useState<string>("patient");
+  const [loading, setLoading] = useState(false);
+  const { signUp, signIn, user, profile } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Redirect if already logged in
+    if (user && profile) {
+      navigate(`/dashboard/${profile.role}`);
+    }
+  }, [user, profile, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement authentication logic
-    console.log("Login:", { email, password, role });
+    setLoading(true);
+    try {
+      await signIn(email, password);
+    } catch (error) {
+      // Error is handled in useAuth hook
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement signup logic
-    console.log("Signup:", { name, email, password, role });
-  };
-
-  const roleIcons = {
-    patient: UserCircle,
-    doctor: Stethoscope,
-    admin: Shield
+    
+    if (password.length < 6) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await signUp(email, password, name, role);
+    } catch (error) {
+      // Error is handled in useAuth hook
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -107,8 +129,12 @@ const Auth = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                    Sign In
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                    disabled={loading}
+                  >
+                    {loading ? "Signing in..." : "Sign In"}
                   </Button>
                 </form>
               </TabsContent>
@@ -181,8 +207,12 @@ const Auth = () => {
                     By signing up, you agree to our Terms of Service and Privacy Policy. 
                     Your data is encrypted and HIPAA compliant.
                   </p>
-                  <Button type="submit" className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                    Create Account
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                    disabled={loading}
+                  >
+                    {loading ? "Creating account..." : "Create Account"}
                   </Button>
                 </form>
               </TabsContent>

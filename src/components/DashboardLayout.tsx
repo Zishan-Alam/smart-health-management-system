@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Activity, Calendar, FileText, Users, Settings, LogOut, LayoutDashboard, CreditCard, Stethoscope, BarChart3 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
   const location = useLocation();
+  const { signOut, profile } = useAuth();
   
   const patientNav = [
     { name: "Dashboard", path: "/dashboard/patient", icon: LayoutDashboard },
@@ -68,7 +70,11 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
         </nav>
 
         <div className="pt-6 border-t border-border/50">
-          <Button variant="ghost" className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start gap-3 text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={signOut}
+          >
             <LogOut className="h-5 w-5" />
             Sign Out
           </Button>
@@ -90,10 +96,10 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
             </div>
             <div className="flex items-center gap-3 ml-auto">
               <span className="text-sm text-muted-foreground hidden md:block">
-                {role.charAt(0).toUpperCase() + role.slice(1)} Portal
+                {profile?.full_name || role.charAt(0).toUpperCase() + role.slice(1)}
               </span>
               <div className="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-semibold">
-                {role.charAt(0).toUpperCase()}
+                {profile?.full_name?.charAt(0).toUpperCase() || role.charAt(0).toUpperCase()}
               </div>
             </div>
           </div>
