@@ -1,38 +1,94 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, FileText, CreditCard, User, Activity } from "lucide-react";
+import { Calendar, FileText, CreditCard, Activity, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const PatientDashboard = () => {
+  const { user, profile } = useAuth();
+  const [stats, setStats] = useState({ appointments: 0, records: 0, bills: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [user]);
+
+  const fetchDashboardData = async () => {
+    if (!user) return;
+
+    try {
+      const { data: patientData } = await supabase
+        .from("patients")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!patientData) return;
+
+      const [appointmentsRes, recordsRes, billsRes] = await Promise.all([
+        supabase.from("appointments").select("id", { count: "exact" }).eq("patient_id", patientData.id).eq("status", "scheduled"),
+        supabase.from("health_records").select("id", { count: "exact" }).eq("patient_id", patientData.id),
+        supabase.from("bills").select("amount").eq("patient_id", patientData.id).eq("payment_status", "pending"),
+      ]);
+
+      const totalBills = billsRes.data?.reduce((sum, b) => sum + Number(b.amount), 0) || 0;
+
+      setStats({
+        appointments: appointmentsRes.count || 0,
+        records: recordsRes.count || 0,
+        bills: totalBills,
+      });
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const quickStats = [
-    { label: "Upcoming Appointments", value: "2", icon: Calendar, color: "text-primary" },
-    { label: "Active Prescriptions", value: "3", icon: FileText, color: "text-secondary" },
-    { label: "Pending Bills", value: "$250", icon: CreditCard, color: "text-orange-500" },
+    { label: "Upcoming Appointments", value: stats.appointments.toString(), icon: Calendar, color: "text-primary", link: "/dashboard/patient/appointments" },
+    { label: "Health Records", value: stats.records.toString(), icon: FileText, color: "text-secondary", link: "/dashboard/patient/records" },
+    { label: "Pending Bills", value: `$${stats.bills.toFixed(2)}`, icon: CreditCard, color: "text-orange-500", link: "/dashboard/patient/billing" },
   ];
+
+  if (loading) {
+    return (
+      <DashboardLayout role="patient">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout role="patient">
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold mb-2">Welcome Back, Patient</h1>
+          <h1 className="text-3xl font-bold mb-2">Welcome Back, {profile?.full_name}</h1>
           <p className="text-muted-foreground">Manage your health records and appointments</p>
         </div>
 
         {/* Quick Stats */}
         <div className="grid md:grid-cols-3 gap-6">
           {quickStats.map((stat, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {stat.label}
-                </CardTitle>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{stat.value}</div>
-              </CardContent>
-            </Card>
+            <Link key={index} to={stat.link}>
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {stat.label}
+                  </CardTitle>
+                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{stat.value}</div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 
@@ -69,9 +125,11 @@ const PatientDashboard = () => {
                   <p className="text-sm text-muted-foreground">Next Week, 2:30 PM</p>
                 </div>
               </div>
-              <Button className="w-full mt-4" variant="outline">
-                Book New Appointment
-              </Button>
+              <Link to="/dashboard/patient/appointments">
+                <Button className="w-full mt-4" variant="outline">
+                  Book New Appointment
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -106,9 +164,11 @@ const PatientDashboard = () => {
                   <p className="text-xs text-muted-foreground">1 week ago</p>
                 </div>
               </div>
-              <Button className="w-full mt-4" variant="outline">
-                View All Records
-              </Button>
+              <Link to="/dashboard/patient/records">
+                <Button className="w-full mt-4" variant="outline">
+                  View All Records
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>

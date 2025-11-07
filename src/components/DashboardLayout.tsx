@@ -18,23 +18,18 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
     { name: "Appointments", path: "/dashboard/patient/appointments", icon: Calendar },
     { name: "Health Records", path: "/dashboard/patient/records", icon: FileText },
     { name: "Billing", path: "/dashboard/patient/billing", icon: CreditCard },
-    { name: "Settings", path: "/dashboard/patient/settings", icon: Settings },
   ];
 
   const doctorNav = [
     { name: "Dashboard", path: "/dashboard/doctor", icon: LayoutDashboard },
     { name: "Schedule", path: "/dashboard/doctor/schedule", icon: Calendar },
     { name: "Patients", path: "/dashboard/doctor/patients", icon: Users },
-    { name: "Consultations", path: "/dashboard/doctor/consultations", icon: Stethoscope },
-    { name: "Settings", path: "/dashboard/doctor/settings", icon: Settings },
   ];
 
   const adminNav = [
     { name: "Dashboard", path: "/dashboard/admin", icon: LayoutDashboard },
     { name: "Users", path: "/dashboard/admin/users", icon: Users },
-    { name: "Analytics", path: "/dashboard/admin/analytics", icon: BarChart3 },
     { name: "Billing", path: "/dashboard/admin/billing", icon: CreditCard },
-    { name: "Settings", path: "/dashboard/admin/settings", icon: Settings },
   ];
 
   const navigation = role === "patient" ? patientNav : role === "doctor" ? doctorNav : adminNav;
