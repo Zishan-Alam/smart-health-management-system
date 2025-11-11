@@ -1,73 +1,102 @@
-# Welcome to your Lovable project
+# 🏥 Smart Health Management System
 
-## Project info
+The **Smart Health Management System (SHMS)** is a web-based platform designed to make hospital and clinic management more efficient.  
+It connects **patients**, **doctors**, and **administrators** on a single platform to handle **appointments, health records, and billing** digitally.
 
-**URL**: https://lovable.dev/projects/fc791716-e42a-4891-af86-c033e356b542
+---
 
-## How can I edit this code?
+## 🚀 Overview
 
-There are several ways of editing your application.
+This system replaces manual hospital operations with an online solution for:
+- Booking doctor appointments  
+- Managing electronic health records  
+- Generating and tracking patient bills  
+- Providing admin-level control and analytics  
 
-**Use Lovable**
+It ensures secure data handling, role-based access, and smooth usability for all users.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fc791716-e42a-4891-af86-c033e356b542) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🧰 Tech Stack
 
-**Use your preferred IDE**
+**Frontend:**  
+- Next.js (React Framework)  
+- Tailwind CSS (for responsive UI)  
+- Framer Motion (for animations)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+**Backend:**  
+- Supabase (PostgreSQL + Authentication + API)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+**Deployment:**  
+- Lovable / Vercel  
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 👥 User Roles
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+| Role | Description |
+|------|--------------|
+| 👤 **Patient** | Book appointments, view health records, and check bills. |
+| 🧑‍⚕️ **Doctor** | Manage appointments, update patient records, and mark visits as completed. |
+| 🧑‍💼 **Admin** | Oversee users, appointments, and billing data; ensure system management. |
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+## ⚙️ Core Functionalities
 
-**Edit a file directly in GitHub**
+### 🔐 Authentication
+- Secure login/signup with Supabase Auth  
+- Role-based redirection to dashboards (Patient, Doctor, Admin)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### 📅 Appointment Booking
+- Patients book appointments with available doctors  
+- Doctors view, update, and complete appointments  
+- Admins can view all hospital appointments
 
-**Use GitHub Codespaces**
+### 🩺 Electronic Health Records (EHR)
+- Doctors create and update patient records  
+- Patients can view their diagnosis and treatment history  
+- All data stored securely in Supabase
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### 💰 Billing System
+- Bills are auto-generated when consultations are completed  
+- Patients can view and download bills  
+- Admin tracks payment status and financial summaries
 
-## What technologies are used for this project?
+### 🧑‍💼 Admin Dashboard
+- Full visibility over hospital data  
+- Manage users, appointments, and billing  
+- Generate insights and maintain system integrity
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 💡 Key Features
 
-## How can I deploy this project?
+- 🧩 **Full CRUD operations** with Supabase  
+- 📱 **Fully responsive design** (works on mobile, tablet, and desktop)  
+- ☁️ **Cloud-based database** for real-time data sync  
+- 🔒 **Secure role-based access control**  
+- 📊 **Clean and intuitive dashboards** for all users  
 
-Simply open [Lovable](https://lovable.dev/projects/fc791716-e42a-4891-af86-c033e356b542) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## 🔒 Security
 
-Yes, you can!
+- All user data stored in Supabase (PostgreSQL)  
+- Row-Level Security (RLS) ensures users only see their relevant data  
+- Admins have complete monitoring access  
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🧠 In Simple Words
+
+The system acts like a **digital hospital assistant** —  
+patients book and track visits, doctors manage records, and admins monitor everything from one place.  
+It makes healthcare **faster, organized, and paperless**.
+
+---
+
+## 📜 License
+This project was built as part of the **SEN6000 – Advanced Programming Module** at Cardiff Metropolitan University.
+
+---
