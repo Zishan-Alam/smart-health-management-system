@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, FileText, CreditCard, Activity, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client-fallback";
 import { useAuth } from "@/contexts/AuthContext";
 
 const PatientDashboard = () => {

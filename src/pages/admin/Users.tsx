@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Loader2, UserCircle, Stethoscope, Shield } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client-fallback";
 
 const UsersPage = () => {
   const [profiles, setProfiles] = useState<any[]>([]);
