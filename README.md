@@ -20,6 +20,7 @@ It ensures secure data handling, role-based access, and smooth usability for all
 ## 🧰 Tech Stack
 
 **Frontend:**  
+- Typescript
 - Next.js (React Framework)  
 - Tailwind CSS (for responsive UI)  
 - Framer Motion (for animations)
